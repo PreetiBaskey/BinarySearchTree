@@ -1,0 +1,92 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+vector<int> tree;
+
+class node {
+    public:
+        int data;
+        node* left;
+        node* right;
+        
+        node(int data) {
+            this->data = data;
+            this->left = NULL;
+            this->right = NULL;
+        }
+};
+
+node* createBinaryTree(node* root) {
+    int data;
+    cout<<"Enter data [Enter -1 for NULL] :- ";
+    cin>>data;
+    if(data == -1) {
+        return NULL;
+    }
+    root = new node(data);
+    cout<<"Enter left data of "<<data<<endl;
+    root->left = createBinaryTree(root->left);
+    cout<<"Enter right data of "<<data<<endl;
+    root->right = createBinaryTree(root->right);
+    
+    return root;
+}
+
+void inOrder(node* root) {
+    if(root == NULL) {
+        return;
+    }
+    inOrder(root->left);
+    cout<<root->data<<" ";
+    tree.push_back(root->data);
+    inOrder(root->right);
+}
+
+node* createBST(node* &root, vector<int> &tree, int &idx) {
+
+    if(root == NULL) return NULL;
+    root->left = createBST(root->left, tree, idx);
+    root->data = tree[idx];
+    idx++;
+    root->right = createBST(root->right, tree, idx);
+    
+    return root;
+}
+
+int main() {
+    
+    node* root = NULL;
+    node* updatedRoot = createBinaryTree(root);
+    cout<<"InOrder traversal is :- ";
+    inOrder(updatedRoot);
+    cout<<endl;
+    cout<<"Data from tree vector is :- ";
+    for(const auto data: tree) {
+        cout<<data<<" ";
+    }
+    int n = tree.size();
+    
+    for(int i = 0; i < n - 1; i++) {
+        for(int j = 0; j < n - i - 1; j++) {
+            if(tree[j] > tree[j + 1]) {
+                int temp = tree[j];
+                tree[j] = tree[j + 1];
+                tree[j + 1] = temp;
+            }
+        }
+    }
+    
+    cout<<endl<<"Vector Array after sorting is :- ";
+    for(int i = 0; i < n; i++) {
+        cout<<tree[i]<<" ";
+    }
+    
+    int idx = 0;
+    node* updatedRoot1 = createBST(updatedRoot, tree, idx);
+    
+    cout<<endl;
+    cout<<"InOrder traversal of newly created BST :- ";
+    inOrder(updatedRoot1);
+    
+    return 0;
+}
