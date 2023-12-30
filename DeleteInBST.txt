@@ -1,0 +1,115 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+class node {
+    public:
+        int data;
+        node* left;
+        node* right;
+        
+        node(int data) {
+            this->data = data;
+            this->left = NULL;
+            this->right = NULL;
+        }
+};
+
+node* createBST(node* root, int data) {
+    if(root == NULL) {
+        return new node(data);
+    }
+    if(data == root->data) {
+        return root;
+    }
+    else if(data < root->data) {
+        root->left = createBST(root->left, data);
+    }
+    else if(data > root->data) {
+        root->right = createBST(root->right, data);
+    }
+    return root;
+}
+
+void enterData(node* &root) {
+    int data;
+    cout<<"Enter data [Enter -1 to end] :- ";
+    cin>>data;
+    while(data != -1) {
+        root = createBST(root, data);
+        cout<<"Enter data [Enter -1 to end] :- ";
+        cin>>data;
+    }
+}
+
+void inOrder(node* root) {
+    if(root == NULL) {
+        return;
+    }
+    inOrder(root->left);
+    cout<<root->data<<" ";
+    inOrder(root->right);
+}
+
+node* findMin(node* root) {
+    if(root == NULL) {
+        return NULL;
+    }
+    while(root->left != NULL) {
+        root = root->left;
+    }
+    return root;
+}
+
+node* deleteFromBST(node* root, int data) {
+    if(root == NULL) {
+        return NULL;
+    }
+    if(data < root->data) {
+        root->left = deleteFromBST(root->left, data);
+    }
+    else if(data > root->data) {
+        root->right = deleteFromBST(root->right, data);
+    }
+    else {
+        //Having no children
+        if(root->left == NULL && root->right == NULL) {
+            delete root;
+            root = NULL;
+        }
+        //Having only 1 child
+        else if(root->left == NULL) {
+            node* temp = root;
+            root = root->right;
+            delete temp;
+        }
+        else if(root->right == NULL) {
+            node* temp = root;
+            root = root->left;
+            delete temp;
+        }
+        //Having 2 children
+        else {
+            node* temp = findMin(root->right);
+            root->data = temp->data;
+            root->right = deleteFromBST(root->right, temp->data);
+        }
+    }
+    return root;
+}
+
+int main() {
+    
+    node* root = NULL;
+    cout<<"Enter data from an array : "<<endl;
+    enterData(root);
+    cout<<endl<<"InOrder traversal is :- ";
+    inOrder(root);
+    int data;
+    cout<<endl<<"Enter data to be deleted :- ";
+    cin>>data;
+    deleteFromBST(root, data);
+    cout<<endl<<"InOrder traversal after deletion is :- ";
+    inOrder(root);
+    
+    return 0;
+}
