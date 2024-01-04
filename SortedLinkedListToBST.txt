@@ -1,0 +1,100 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+class linkedList {
+    public:
+        int data;
+        linkedList* next;
+        
+        linkedList(int data) {
+            this->data = data;
+            this->next = NULL;
+        }
+};
+
+class node {
+    public:
+        int data;
+        node* left;
+        node* right;
+        
+        node(int data) {
+            this->data = data;
+            this->left = NULL;
+            this->right = NULL;
+        }
+};
+
+void inOrder(node* root) {
+    if(root == NULL) {
+        return;
+    }
+    inOrder(root->left);
+    cout<<root->data<<" ";
+    inOrder(root->right);
+}
+
+linkedList* createLinkedList(linkedList* root) {
+    int data;
+    cout<<"Enter data [Enter -1 for NULL] :- ";
+    cin>>data;
+    if(data == -1) {
+        return NULL;
+    }
+    root = new linkedList(data);
+    cout<<"Enter next data :- "<<data<<endl;
+    root->next = createLinkedList(root->next);
+    
+    return root;
+}
+
+void printLinkedListData(linkedList* root) {
+    if(root == NULL) {
+        return;
+    }
+    while(root != NULL) {
+        cout<<root->data<<" ";
+        root = root->next;
+    }
+}
+
+node* sortedLinkedListToBalancedBST(linkedList* head) {
+    if(head == NULL) {
+        return NULL;
+    }
+    if(head->next == NULL) {
+        return new node(head->data);
+    }
+    
+    linkedList* slow = head;
+    linkedList* fast = head;
+    linkedList* slowPrevious = NULL;
+    while(fast != NULL && fast->next != NULL) {
+        slowPrevious = slow;
+        slow = slow->next;
+        fast = (fast->next)->next;
+    }
+    // cout<<endl<<"Slow :- "<<slow->data<<endl;
+    // cout<<"Fast :- "<<fast->data<<endl;
+    // cout<<"Slow previous :- "<<slowPrevious->data<<endl;
+    
+    node* root = new node(slow->data);
+    slowPrevious->next = NULL;
+    root->left = sortedLinkedListToBalancedBST(head);
+    root->right = sortedLinkedListToBalancedBST(slow->next);
+    
+    return root;
+}
+
+int main() {
+    
+    linkedList* root = NULL;
+    linkedList* linkedListHead = createLinkedList(root);
+    cout<<"LinkedList list is :- ";
+    printLinkedListData(linkedListHead);
+    node* result = sortedLinkedListToBalancedBST(linkedListHead);
+    cout<<endl<<"InOrder traversal of BST is :- ";
+    inOrder(result);
+    
+    return 0;
+}
