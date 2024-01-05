@@ -1,0 +1,106 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+vector<int> combinedArray;
+
+class node {
+    public:
+        int data;
+        node* left;
+        node* right;
+        
+        node(int data) {
+            this->data = data;
+            this->left = NULL;
+            this->right = NULL;
+        }
+};
+
+node* createBST(node* root, int data) {
+    if(root == NULL) {
+        return new node(data);
+    }
+    if(data < root->data) {
+        root->left = createBST(root->left, data);
+    }
+    else if(data > root->data) {
+        root->right = createBST(root->right, data);
+    }
+    
+    return root;
+}
+
+node* enterData(node* root) {
+    int data;
+    cout<<"Enter data [Enter -1 to end] :- ";
+    cin>>data;
+    while(data != -1) {
+        root = createBST(root, data);
+        cout<<"Enter data [Enter -1 to end] :- ";
+        cin>>data;
+    }
+    
+    return root;
+}
+
+void inOrder(node* root) {
+    if(root == NULL) {
+        return;
+    }
+    inOrder(root->left);
+    cout<<root->data<<" ";
+    combinedArray.push_back(root->data);
+    inOrder(root->right);
+}
+
+node* createBSTFromSortedArray(vector<int> combinedArray, int start, int end) {
+    if(start > end) {
+        return NULL;
+    }
+    int mid = (start + end) / 2;
+    node* root = new node(combinedArray[mid]);
+    root->left = createBSTFromSortedArray(combinedArray, start, mid - 1);
+    root->right = createBSTFromSortedArray(combinedArray, mid + 1, end);
+    
+    return root;
+    
+}
+
+int main() {
+    
+    node* root = NULL;
+    node* updatedRoot = enterData(root);
+    cout<<"InOrder traversal for first BST is :- ";
+    inOrder(updatedRoot);
+    cout<<endl;
+    node* updatedRoot1 = enterData(root);
+    cout<<endl<<"InOrder traversal for second BST is :- ";
+    inOrder(updatedRoot1);
+    cout<<endl;
+    
+    cout<<endl<<"Combined vector is :- ";
+    for(int data: combinedArray) {
+        cout<<data<<" ";
+    }
+    
+    for(int i = 0; i < combinedArray.size() - 1; i++) {
+        for(int j = 0; j < combinedArray.size() - i - 1; j++) {
+            if(combinedArray[j] > combinedArray[j + 1]) {
+                int temp = combinedArray[j];
+                combinedArray[j] = combinedArray[j + 1];
+                combinedArray[j + 1] = temp;
+            }
+        }
+    }
+    
+    cout<<endl<<"Sorted combined vector is :- ";
+    for(int i = 0; i < combinedArray.size(); i++) {
+        cout<<combinedArray[i]<<" ";
+    }
+    
+    node* updatedRoot2 = createBSTFromSortedArray(combinedArray, 0, combinedArray.size() - 1);
+    cout<<endl<<"Merged Balanced BST is :- ";
+    inOrder(updatedRoot2);
+    
+    return 0;
+}
