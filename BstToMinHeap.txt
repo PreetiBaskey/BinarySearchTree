@@ -1,0 +1,100 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+//Vector to store all BST element
+vector<int> collectData;
+
+//Class representing a tree node
+class node {
+    public:
+        int data;
+        node* left;
+        node* right;
+        
+        node(int data) {
+            this->data = data;
+            this->left = NULL;
+            this->right = NULL;
+        }
+};
+
+//Function to create BST
+node* createBST(node* root, int data) {
+    if(root == NULL) {
+        return new node(data);
+    }
+    if(data < root->data) {
+        root->left = createBST(root->left, data);
+    }
+    else if(data > root->data) {
+        root->right = createBST(root->right, data);
+    }
+    
+    return root;
+}
+
+//InOrder traversal on BST
+void inOrder(node* root) {
+    if(root == NULL) {
+        return;
+    }
+    inOrder(root->left);
+    cout<<root->data<<" ";
+    collectData.push_back(root->data);
+    inOrder(root->right);
+}
+
+void preOrder(node* root) {
+    if(root == NULL) {
+        return;
+    }
+    cout<<root->data<<" ";
+    preOrder(root->left);
+    preOrder(root->right);
+}
+
+//Function for adding/populating BST
+node* enterData(node* root) {
+    int data;
+    cout<<"Enter data [Enter -1 to end] :- ";
+    cin>>data;
+    while(data != -1) {
+        root = createBST(root, data);
+        cout<<"Enter data [Enter -1 to end] :- ";
+        cin>>data;
+    }
+    
+    return root;
+}
+
+//Function to convert  - BST to Min Heap
+node* bstToMinHeap(node* root, vector<int> &collectData, int &idx) {
+    if(root == NULL) {
+        return NULL;
+    }
+    root->data = collectData[idx];
+    idx++;
+    bstToMinHeap(root->left, collectData, idx);
+    bstToMinHeap(root->right, collectData, idx);
+    
+    return root;
+}
+
+//Main function 
+int main() {
+    
+    node* root = NULL;
+    cout<<"Enter data for creating BST : "<<endl;
+    node* updatedRoot = enterData(root);
+    cout<<"InOrder traversal for BST is :- ";
+    inOrder(updatedRoot);
+    
+    int idx = 0;
+    node* updatedRoot1 = bstToMinHeap(updatedRoot, collectData, idx);
+    cout<<endl<<"InOrder traversal for Min Heap is :- ";
+    inOrder(updatedRoot1);
+    cout<<endl<<"PreOrder traversal for Min Heap is :- ";
+    preOrder(updatedRoot1);
+    
+    return 0;
+}
