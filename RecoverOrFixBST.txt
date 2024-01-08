@@ -1,0 +1,100 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+class node {
+    public:
+        int data;
+        node* left;
+        node* right;
+        
+        node(int data) {
+            this->data = data;
+            this->left = NULL;
+            this->right = NULL;
+        }
+};
+
+//Swap node data, which are not in correct places of the Tree.
+node* inOrder(node* root, node* &prev, node* &first, node* &last) {
+    if(root == NULL) {
+        return NULL;
+    }
+    inOrder(root->left, prev, first, last);
+    cout<<root->data<<" ";
+    if(prev != NULL) {
+        if(prev->data > root->data) {
+            if(first == NULL) {
+                first = prev;
+            }
+            last = root;
+        }
+    }
+    prev = root;
+    inOrder(root->right, prev, first, last);
+    
+    return root;
+}
+
+//Normal InOrder traversal for showing recover BST
+void defaultInOrder(node* root) {
+    if(root == NULL) {
+        return;
+    }
+    defaultInOrder(root->left);
+    cout<<root->data<<" ";
+    defaultInOrder(root->right);
+}
+
+node* enterData(node* root) {
+    int data;
+    cout<<"Enter data [Enter -1 to end] :- ";
+    cin>>data;
+    while(data != -1) {
+        root = createBST(root, data);
+        cout<<"Enter data [Enter -1 to end] :- ";
+        cin>>data;
+    }
+    
+    return root;
+}
+
+//Created/defined Binary Tree instead of BST, so that, it can store
+//dis-ordered data of BST.
+node* createBinaryTree(node* root) {
+    int data;
+    cout<<"Enter data [Enter -1 for NULL] :- ";
+    cin>>data;
+    if(data == -1) {
+        return NULL;
+    }
+    root = new node(data);
+    cout<<"Enter left data of :- "<<data<<endl;
+    root->left = createBinaryTree(root->left);
+    cout<<"Enter right data of :- "<<data<<endl;
+    root->right = createBinaryTree(root->right);
+    
+    return root;
+}
+
+int main() {
+    node* prev = NULL;
+    node* first = NULL;
+    node* last = NULL;
+    
+    node* root = NULL;
+    node* updatedRoot = createBinaryTree(root);
+    cout<<"InOrder traversal before recover data is :- ";
+    node* updatedRoot1 = inOrder(updatedRoot, prev, first, last);
+    
+    cout<<endl<<"First data is :- "<<first->data;
+    cout<<endl<<"Last data is :- "<<last->data;
+    
+    int temp = first->data;
+    first->data = last->data;
+    last->data = temp;
+    
+    cout<<endl<<"InOrder traversal after recover data is :- ";
+    defaultInOrder(updatedRoot1);
+    
+    return 0;
+}
