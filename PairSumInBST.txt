@@ -1,0 +1,92 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+vector<int> collectData;
+
+class node {
+    public:
+        int data;
+        node* left;
+        node* right;
+        
+        node(int data) {
+            this->data = data;
+            this->left = NULL;
+            this->right = NULL;
+        }
+};
+
+node* createBST(node* root, int data) {
+    if(root == NULL) {
+        return new node(data);
+    }
+    if(data < root->data) {
+        root->left = createBST(root->left, data);
+    }
+    else if(data > root->data) {
+        root->right = createBST(root->right, data);
+    }
+    
+    return root;
+}
+
+void inOrder(node* root) {
+    if(root == NULL) {
+        return;
+    }
+    inOrder(root->left);
+    cout<<root->data<<" ";
+    collectData.push_back(root->data);
+    inOrder(root->right);
+}
+
+node* enterData(node* root) {
+    int data;
+    cout<<"Enter data [Enter -1 to end] :- ";
+    cin>>data;
+    while(data != -1) {
+        root = createBST(root, data);
+        cout<<"Enter data [Enter -1 to end] :- ";
+        cin>>data;
+    }
+    
+    return root;
+}
+
+bool checkTwoSum(vector<int> &collectData, int target) {
+    int left = 0, right = collectData.size() - 1;
+    while(left < right) {
+        if(collectData[left] + collectData[right] == target) {
+            return true;
+        }
+        else if(collectData[left] + collectData[right] < target) {
+            left++;
+        }
+        else if(collectData[left] + collectData[right] > target) {
+            right--;
+        }
+    }
+    return false;
+}
+
+int main() {
+    
+    node* root = NULL;
+    node* updatedRoot = enterData(root);
+    cout<<"InOrder traversal is :- ";
+    inOrder(updatedRoot);
+    
+    int target;
+    cout<<endl<<"Enter target :- ";
+    cin>>target;
+    
+    bool result = checkTwoSum(collectData, target);
+    if(result) {
+        cout<<"Found !!";
+    }
+    else {
+        cout<<"Not found !!";
+    }
+    
+    return 0;
+}
