@@ -1,0 +1,88 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+class node {
+    public:
+        int data;
+        node* left;
+        node* right;
+        
+        node(int data) {
+            this->data = data;
+            this->left = NULL;
+            this->right = NULL;
+        }
+};
+
+node* createBST(node* root, int data) {
+    if(root == NULL) {
+        return new node(data);
+    }
+    if(data < root->data) {
+        root->left = createBST(root->left, data);
+    }
+    else if(data > root->data) {
+        root->right = createBST(root->right, data);
+    }
+    
+    return root;
+}
+
+void defaultInOrder(node* root) {
+    if(root == NULL) {
+        return;
+    }
+    //Order changed for finding kth largest element in BST
+    defaultInOrder(root->right);
+    cout<<root->data<<" ";
+    defaultInOrder(root->left);
+}
+
+int inOrder(node* root, int &i, int k) {
+    if(root == NULL) {
+        return -1;
+    }
+    
+    int result = inOrder(root->right, i, k);
+    if(result != -1) {
+        return result;
+    }
+    
+    i++;
+    if(i == k) {
+        return root->data;
+    }
+   
+    return inOrder(root->left, i, k);
+   
+}
+
+node* enterData(node* root) {
+    int data;
+    cout<<"Enter data [Enter -1 to end] :- ";
+    cin>>data;
+    while(data != -1) {
+        root = createBST(root, data);
+        cout<<"Enter data [Enter -1 to end] :- ";
+        cin>>data;
+    }
+    
+    return root;
+}
+
+int main() {
+    
+    node* root = NULL;
+    node* updatedRoot = enterData(root);
+    cout<<"Default InOrder traversal is :- ";
+    defaultInOrder(updatedRoot);
+    
+    int i = 0;
+    int k;
+    cout<<endl<<"Enter kth number :- ";
+    cin>>k;
+    int result = inOrder(updatedRoot, i, k);
+    cout<<k<<"th largest element is :- "<<result;
+    
+    return 0;
+}
