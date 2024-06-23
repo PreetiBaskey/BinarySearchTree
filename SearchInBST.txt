@@ -1,34 +1,50 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-class node {
+class Node {
     public:
         int data;
-        node* left;
-        node* right;
+        Node* left;
+        Node* right;
         
-        node(int data) {
+        Node(int data) {
             this->data = data;
             this->left = NULL;
             this->right = NULL;
         }
 };
-
-node* createBST(node* root, int data) {
+Node* createBST(Node* root, int data) {
     if(root == NULL) {
-        return new node(data);
+        root = new Node(data);
     }
     if(data < root->data) {
         root->left = createBST(root->left, data);
     }
-    else if(data > root->data) {
+    if(data > root->data) {
         root->right = createBST(root->right, data);
     }
-    return root;
     
+    return root;
 }
-
-void enterData(node* &root) {
+void levelOrder(Node* root) {
+    if(root == NULL) {
+        return;
+    }
+    queue<Node*> q;
+    q.push(root);
+    while(!q.empty()) {
+        Node* front_node = q.front();
+        q.pop();
+        cout<<front_node->data<<" ";
+        if(front_node->left != NULL) {
+            q.push(front_node->left);
+        }
+        if(front_node->right != NULL) {
+            q.push(front_node->right);
+        }
+    }
+}
+void enterData(Node* &root) {
     int data;
     cout<<"Enter data [Enter -1 to end] :- ";
     cin>>data;
@@ -39,42 +55,43 @@ void enterData(node* &root) {
     }
 }
 
-void inOrder(node* &root) {
-    if(root == NULL) {
-        return;
-    }
-    inOrder(root->left);
-    cout<<root->data<<" ";
-    inOrder(root->right);
-}
+//Recursive Method
+// bool searchInBST(Node* root, int data) 
 
-bool searchBST(node* &root, int val) {
-    if(root == NULL) {
-        return false;
+//Iterative Method
+bool searchInBST(Node* root, int data) {
+    Node* temp = root;
+    while(temp != NULL) {
+        if(data == temp->data) {
+            return true;
+        }
+        if(data < temp->data) {
+            temp = temp->left;
+        }
+        else {
+            temp = temp->right;
+        }
     }
-    if(val == root->data) {
-        return true;
-    }
-    if(val < root->data) {
-        return searchBST(root->left, val);
-    }
-    else if(val > root->data) {
-        return searchBST(root->right, val);
-    }
+    
     return false;
 }
 
 int main() {
     
-    node* root = NULL;
+    Node* root = NULL;
     enterData(root);
-    cout<<"InOrder traversal is :- ";
-    inOrder(root);
-    int val;
-    cout<<endl<<"Enter value to search :- ";
-    cin>>val;
-    bool result = searchBST(root, val);
-    cout<<endl<<"Search value for "<<val<<" is :- "<<result;
+    cout<<endl<<"Level order traveral is :- ";
+    levelOrder(root);
+    int data;
+    cout<<endl<<"Enter node to search :- ";
+    cin>>data;
+    bool result = searchInBST(root, data);
+    if(result) {
+        cout<<data<<" found !!";
+    }
+    else {
+        cout<<data<<" not found !!";
+    }
     
     return 0;
 }
