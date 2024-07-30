@@ -1,0 +1,25 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int uniqueTrees(int n) {
+    if(n <= 1) {
+        return 1;
+    }
+    int ans = 0;
+    for(int i = 1; i <= n; i++) {
+        ans += uniqueTrees(i - 1) * uniqueTrees(n - i);
+    }
+    
+    return ans;
+}
+
+int main() {
+    
+    int n;
+    cout<<"Enter number of nodes :- ";
+    cin>>n;
+    int result = uniqueTrees(n);
+    cout<<"Number of unique binary search trees are  :- "<<result;
+    
+    return 0;
+}
