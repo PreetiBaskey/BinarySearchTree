@@ -1,31 +1,94 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-class linkedList {
+class LinkedList {
     public:
         int data;
-        linkedList* next;
+        LinkedList* next;
         
-        linkedList(int data) {
+        LinkedList(int data) {
             this->data = data;
             this->next = NULL;
         }
 };
-
-class node {
+class TreeNode {
     public:
         int data;
-        node* left;
-        node* right;
+        TreeNode* left;
+        TreeNode* right;
         
-        node(int data) {
+        TreeNode(int data) {
             this->data = data;
             this->left = NULL;
             this->right = NULL;
         }
 };
 
-void inOrder(node* root) {
+void levelOrder(TreeNode* root) {
+    if(root == NULL) {
+        return;
+    }
+    queue<TreeNode*> q;
+    q.push(root);
+    while(!q.empty()) {
+        TreeNode* front_node = q.front();
+        q.pop();
+        cout<<front_node->data<<" ";
+        if(front_node->left != NULL) {
+            q.push(front_node->left);
+        }
+        if(front_node->right != NULL) {
+            q.push(front_node->right);
+        }
+    }
+}
+
+LinkedList* createLinkedList(LinkedList* root) {
+    int data;
+    cout<<"Enter data [Enter -1 for NULL] :- ";
+    cin>>data;
+    if(data == -1) {
+        return NULL;
+    }
+    root = new LinkedList(data);
+    cout<<"Enter next data of "<<data<<endl;
+    root->next = createLinkedList(root->next);
+    
+    return root;
+}
+void printLinkedList(LinkedList* root) {
+    if(root == NULL) {
+        return;
+    }
+    while(root->next != NULL) {
+        cout<<root->data<<" ";
+        root = root->next;
+    }
+}
+TreeNode* sortedLinkedListToBST(LinkedList* head) {
+    if(head == NULL) {
+        return NULL;
+    }
+    if(head->next == NULL) {
+        return new TreeNode(head->data);
+    }
+    LinkedList* slow = head;
+    LinkedList* fast = head;
+    LinkedList* slow_prev = NULL;
+    
+    while(fast != NULL && fast->next != NULL) {
+        slow_prev = slow;
+        slow = slow->next;
+        fast = (fast->next)->next;
+    }
+    TreeNode* root = new TreeNode(slow->data);
+    slow_prev->next = NULL;
+    root->left = sortedLinkedListToBST(head);
+    root->right = sortedLinkedListToBST(slow->next);
+    
+    return root;
+}
+void inOrder(TreeNode* root) {
     if(root == NULL) {
         return;
     }
@@ -33,67 +96,14 @@ void inOrder(node* root) {
     cout<<root->data<<" ";
     inOrder(root->right);
 }
-
-linkedList* createLinkedList(linkedList* root) {
-    int data;
-    cout<<"Enter data [Enter -1 for NULL] :- ";
-    cin>>data;
-    if(data == -1) {
-        return NULL;
-    }
-    root = new linkedList(data);
-    cout<<"Enter next data :- "<<data<<endl;
-    root->next = createLinkedList(root->next);
-    
-    return root;
-}
-
-void printLinkedListData(linkedList* root) {
-    if(root == NULL) {
-        return;
-    }
-    while(root != NULL) {
-        cout<<root->data<<" ";
-        root = root->next;
-    }
-}
-
-node* sortedLinkedListToBalancedBST(linkedList* head) {
-    if(head == NULL) {
-        return NULL;
-    }
-    if(head->next == NULL) {
-        return new node(head->data);
-    }
-    
-    linkedList* slow = head;
-    linkedList* fast = head;
-    linkedList* slowPrevious = NULL;
-    while(fast != NULL && fast->next != NULL) {
-        slowPrevious = slow;
-        slow = slow->next;
-        fast = (fast->next)->next;
-    }
-    // cout<<endl<<"Slow :- "<<slow->data<<endl;
-    // cout<<"Fast :- "<<fast->data<<endl;
-    // cout<<"Slow previous :- "<<slowPrevious->data<<endl;
-    
-    node* root = new node(slow->data);
-    slowPrevious->next = NULL;
-    root->left = sortedLinkedListToBalancedBST(head);
-    root->right = sortedLinkedListToBalancedBST(slow->next);
-    
-    return root;
-}
-
 int main() {
     
-    linkedList* root = NULL;
-    linkedList* linkedListHead = createLinkedList(root);
-    cout<<"LinkedList list is :- ";
-    printLinkedListData(linkedListHead);
-    node* result = sortedLinkedListToBalancedBST(linkedListHead);
-    cout<<endl<<"InOrder traversal of BST is :- ";
+    LinkedList* listRoot = NULL;
+    LinkedList* updatedLinkedListRoot = createLinkedList(listRoot);
+    cout<<"Your linked list is :- ";
+    printLinkedList(updatedLinkedListRoot);
+    TreeNode* result = sortedLinkedListToBST(updatedLinkedListRoot);
+    cout<<endl<<"Sorted Linked List to BST is :- ";
     inOrder(result);
     
     return 0;
