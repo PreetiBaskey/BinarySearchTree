@@ -1,100 +1,80 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-//Vector to store all BST element
-vector<int> collectData;
-
-//Class representing a tree node
-class node {
+class Node {
     public:
         int data;
-        node* left;
-        node* right;
+        Node* left;
+        Node* right;
         
-        node(int data) {
+        Node(int data) {
             this->data = data;
             this->left = NULL;
             this->right = NULL;
         }
 };
 
-//Function to create BST
-node* createBST(node* root, int data) {
-    if(root == NULL) {
-        return new node(data);
-    }
-    if(data < root->data) {
-        root->left = createBST(root->left, data);
-    }
-    else if(data > root->data) {
-        root->right = createBST(root->right, data);
-    }
-    
-    return root;
-}
-
 //InOrder traversal on BST
-void inOrder(node* root) {
+void inOrder(Node* root, vector<int> &collectData) {
     if(root == NULL) {
         return;
     }
-    inOrder(root->left);
+    inOrder(root->left, collectData);
     cout<<root->data<<" ";
     collectData.push_back(root->data);
-    inOrder(root->right);
+    inOrder(root->right, collectData);
 }
 
-void preOrder(node* root) {
+//For creating BST, we are using binary tree creation code, 
+// because it allow us to create custom tree - node input 
+// and BST Code adjust int's node values in its own.
+Node* createTree(Node* root) {
+    int data;
+    cout<<"Enter data [Enter -1 for NULL] :- ";
+    cin>>data;
+    if(data == -1) {
+        return NULL;
+    }
+    root = new Node(data);
+    cout<<"Enter left side of "<<data<<endl;
+    root->left = createTree(root->left);
+    cout<<"Enter right side of "<<data<<endl;
+    root->right = createTree(root->right);
+    
+    return root;
+}
+
+//Function for converting BST to Min Heap.
+Node* BSTToMinHeap(Node* bstRoot, vector<int> &inorderData, int &idx) {
+    if(bstRoot == NULL) {
+        return NULL;
+    }
+    bstRoot->data = inorderData[idx];
+    idx++;
+    bstRoot->left = BSTToMinHeap(bstRoot->left, inorderData, idx);
+    bstRoot->right = BSTToMinHeap(bstRoot->right, inorderData, idx);
+    
+    return bstRoot;
+}
+void innOrder(Node* root) {
     if(root == NULL) {
         return;
     }
+    innOrder(root->left);
     cout<<root->data<<" ";
-    preOrder(root->left);
-    preOrder(root->right);
+    innOrder(root->right);
 }
-
-//Function for adding/populating BST
-node* enterData(node* root) {
-    int data;
-    cout<<"Enter data [Enter -1 to end] :- ";
-    cin>>data;
-    while(data != -1) {
-        root = createBST(root, data);
-        cout<<"Enter data [Enter -1 to end] :- ";
-        cin>>data;
-    }
-    
-    return root;
-}
-
-//Function to convert  - BST to Min Heap
-node* bstToMinHeap(node* root, vector<int> &collectData, int &idx) {
-    if(root == NULL) {
-        return NULL;
-    }
-    root->data = collectData[idx];
-    idx++;
-    bstToMinHeap(root->left, collectData, idx);
-    bstToMinHeap(root->right, collectData, idx);
-    
-    return root;
-}
-
-//Main function 
 int main() {
     
-    node* root = NULL;
-    cout<<"Enter data for creating BST : "<<endl;
-    node* updatedRoot = enterData(root);
-    cout<<"InOrder traversal for BST is :- ";
-    inOrder(updatedRoot);
-    
+    Node* root = NULL;
+    Node* bstRoot = createTree(root);
+    cout<<"Inorder traversal is :- ";
+    vector<int> inorderData;
+    inOrder(bstRoot, inorderData);
     int idx = 0;
-    node* updatedRoot1 = bstToMinHeap(updatedRoot, collectData, idx);
-    cout<<endl<<"InOrder traversal for Min Heap is :- ";
-    inOrder(updatedRoot1);
-    cout<<endl<<"PreOrder traversal for Min Heap is :- ";
-    preOrder(updatedRoot1);
+    Node* MinHeapRoot = BSTToMinHeap(bstRoot, inorderData, idx);
+    cout<<endl<<"Inorder traversal of min heap is :- ";
+    innOrder(MinHeapRoot);
     
     return 0;
 }
