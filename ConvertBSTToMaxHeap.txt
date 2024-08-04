@@ -1,0 +1,80 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+class Node {
+    public:
+        int data;
+        Node* left;
+        Node* right;
+        
+        Node(int data) {
+            this->data = data;
+            this->left = NULL;
+            this->right = NULL;
+        }
+};
+
+//InOrder traversal on BST
+void inOrder(Node* root, vector<int> &collectData) {
+    if(root == NULL) {
+        return;
+    }
+    inOrder(root->left, collectData);
+    cout<<root->data<<" ";
+    collectData.push_back(root->data);
+    inOrder(root->right, collectData);
+}
+
+//For creating BST, we are using binary tree creation code, 
+// because it allow us to create custom tree - node input 
+// and BST Code adjust int's node values in its own.
+Node* createTree(Node* root) {
+    int data;
+    cout<<"Enter data [Enter -1 for NULL] :- ";
+    cin>>data;
+    if(data == -1) {
+        return NULL;
+    }
+    root = new Node(data);
+    cout<<"Enter left side of "<<data<<endl;
+    root->left = createTree(root->left);
+    cout<<"Enter right side of "<<data<<endl;
+    root->right = createTree(root->right);
+    
+    return root;
+}
+
+//Function for converting BST to Max Heap.
+Node* BSTToMaxHeap(Node* bstRoot, vector<int> &inorderData, int &idx) {
+    if(bstRoot == NULL) {
+        return NULL;
+    }
+    bstRoot->left = BSTToMaxHeap(bstRoot->left, inorderData, idx);
+    bstRoot->right = BSTToMaxHeap(bstRoot->right, inorderData, idx);
+    bstRoot->data = inorderData[idx];
+    idx++;
+    
+    return bstRoot;
+}
+void innOrder(Node* root) {
+    if(root == NULL) {
+        return;
+    }
+    innOrder(root->left);
+    cout<<root->data<<" ";
+    innOrder(root->right);
+}
+int main() {
+    
+    Node* root = NULL;
+    Node* bstRoot = createTree(root);
+    cout<<"Inorder traversal is :- ";
+    vector<int> inorderData;
+    inOrder(bstRoot, inorderData);
+    int idx = 0;
+    Node* MaxHeapRoot = BSTToMaxHeap(bstRoot, inorderData, idx);
+    cout<<endl<<"Inorder traversal of min heap is :- ";
+    innOrder(MaxHeapRoot);
+    
+    return 0;
+}
