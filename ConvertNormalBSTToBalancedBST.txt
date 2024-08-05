@@ -1,0 +1,98 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+vector<int> inOrderData;
+
+class Node {
+    public:
+        int data;
+        Node* left;
+        Node* right;
+        
+        Node(int data) {
+            this->data = data;
+            this->left = NULL;
+            this->right = NULL;
+        }
+};
+
+Node* createBST(Node* root, int data) {
+    if(root == NULL) {
+        return new Node(data);
+    }
+    if(data < root->data) {
+        root->left = createBST(root->left, data);
+    }
+    else if(data > root->data){
+        root->right = createBST(root->right, data);
+    }
+    
+    return root;
+}
+
+void levelOrder(Node* root) {
+    if(root == NULL) {
+        return;
+    }
+    queue<Node*> q;
+    q.push(root);
+    while(!q.empty()) {
+        Node* front_node = q.front();
+        q.pop();
+        cout<<front_node->data<<" ";
+        if(front_node->left != NULL) {
+            q.push(front_node->left);
+        }
+        if(front_node->right != NULL) {
+            q.push(front_node->right);
+        }
+    }
+}
+
+Node* enterData(Node* root) {
+    int data;
+    cout<<"Enter data [Enter -1 to end] :- ";
+    cin>>data;
+    while(data != -1) {
+        root = createBST(root, data);
+        cout<<"Enter data [Enter -1 to end] :- ";
+        cin>>data;
+    }
+    
+    return root;
+}
+void inOrder(Node* root) {
+    if(root == NULL) {
+        return;
+    }
+    inOrder(root->left);
+    cout<<root->data<<" ";
+    inOrderData.push_back(root->data);
+    inOrder(root->right);
+}
+Node* balancedBST(Node* root, vector<int> sortedData, int start, int end) {
+    if(start > end) return NULL;
+        int mid = (start + end) / 2;
+    root = new Node(sortedData[mid]);
+    root->left = balancedBST(root, sortedData, start, mid - 1);
+    root->right = balancedBST(root, sortedData, mid + 1, end);
+    
+    
+    return root;
+}
+int main() {
+    
+    Node* root = NULL;
+    Node* bstRoot = enterData(root);
+    cout<<"Level order traversal is :- ";
+    levelOrder(bstRoot);
+    cout<<endl<<"In order traversal is :- ";
+    inOrder(bstRoot);
+    int size = inOrderData.size();
+    Node* newNode = NULL;
+    Node* balancedBSTRoot = balancedBST(newNode, inOrderData, 0, size - 1);
+    cout<<endl<<"Level Order Traversal of BST after balancing BST is :- ";
+    levelOrder(balancedBSTRoot);
+    
+    return 0;
+}
