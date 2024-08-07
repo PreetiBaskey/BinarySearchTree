@@ -1,3 +1,5 @@
+//Approach1
+
 #include<bits/stdc++.h>
 using namespace std;
 
@@ -107,6 +109,150 @@ int main() {
     cout<<endl<<"Enter value of x :- ";
     cin>>x;
     int result = counterValue(bstRoot1, um, x, count);
+    cout<<endl<<"Counter value is :- "<<result;
+    
+    return 0;
+}
+
+
+
+//Approach2
+#include<bits/stdc++.h>
+using namespace std;
+
+class Node {
+    public:
+        int data;
+        Node* left;
+        Node* right;
+        
+        Node(int data) {
+            this->data = data;
+            this->left = NULL;
+            this->right = NULL;
+        }
+};
+
+Node* createBST(Node* root, int data) {
+    if(root == NULL) {
+        return new Node(data);
+    }
+    if(data < root->data) {
+        root->left = createBST(root->left, data);
+    }
+    else if(data > root->data) {
+        root->right = createBST(root->right, data);
+    }
+    
+    return root;
+}
+
+void levelOrder(Node* root) {
+    if(root == NULL) {
+        return;
+    }
+    queue<Node*> q;
+    q.push(root);
+    while(!q.empty()) {
+        Node* front_node = q.front();
+        q.pop();
+        cout<<front_node->data<<" ";
+        if(front_node->left != NULL) {
+            q.push(front_node->left);
+        }
+        if(front_node->right != NULL) {
+            q.push(front_node->right);
+        }
+    }
+}
+void inOrder(Node* root, unordered_map<int, int> &um) {
+    if(root == NULL) {
+        return;
+    }
+    inOrder(root->left, um);
+    um[root->data] = 1;
+    inOrder(root->right, um);
+}
+
+Node* enterData(Node* root) {
+    int data;
+    cout<<"Enter data [Enter -1 to end] :- ";
+    cin>>data;
+    while(data != -1) {
+        root = createBST(root, data);
+        cout<<"Enter data [Enter -1 to end] :- ";
+        cin>>data;
+    }
+    
+    return root;
+}
+
+int counterValue(Node* bstRoot1, unordered_map<int, int> &um, int x, int &count) {
+    if(bstRoot1 == NULL) {
+        return 0;
+    }
+    
+    if(um.find(x - bstRoot1->data) != um.end()) {
+        count++;
+    }
+    if(bstRoot1->left != NULL) {
+        counterValue(bstRoot1->left, um, x, count);
+    }
+    if(bstRoot1->right != NULL) {
+        counterValue(bstRoot1->right, um, x, count);
+    }
+    
+    return count;
+}
+bool searchInBST2(Node* root, int data) {
+    if(root == NULL) {
+        return false;
+    }
+    if(data == root->data) {
+        return true;
+    }
+    if(data < root->data) {
+        return searchInBST2(root->left, data);
+    }
+    else if(data > root->data) {
+        return searchInBST2(root->right, data);
+    }
+    
+    return false;
+}
+
+int inOrderForCounter(Node* bstRoot1, Node* bstRoot2, int x, int &count) {
+    if(bstRoot1 == NULL) {
+        return 0;
+    }
+    inOrderForCounter(bstRoot1->left, bstRoot2, x, count);
+    int temp = x - bstRoot1->data;
+    bool result = searchInBST2(bstRoot2, temp);
+    if(result == true) {
+        count++;
+    }
+    inOrderForCounter(bstRoot1->right, bstRoot2, x, count);
+    
+    return count;
+}
+
+int main() {
+    
+    Node* root = NULL;
+    cout<<"Enter data for BST1 :- "<<endl;
+    Node* bstRoot1 = enterData(root);
+    cout<<endl<<"Enter data for BST2 :- "<<endl;
+    Node* bstRoot2 = enterData(root);
+    cout<<"Level order traversal of BST1 is :- ";
+    levelOrder(bstRoot1);
+    cout<<endl<<"Level order traversal of BST2 is :- ";
+    levelOrder(bstRoot2);
+    
+    int x, count = 0;
+    cout<<endl<<"Enter value of x :- ";
+    cin>>x;
+    
+    int result = inOrderForCounter(bstRoot1, bstRoot2, x, count);
     cout<<endl<<"Counter value is :- "<<result;
     
     return 0;
