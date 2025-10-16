@@ -90,3 +90,60 @@ int main() {
     
     return 0;
 }
+
+
+
+
+
+
+//GeeksForGeeks version of binary tree to binary search tree
+/* The Node structure is
+struct Node
+{
+    int data;
+    struct Node *left;
+    struct Node *right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+    Node* inorderBST(Node* root, vector<int> &inorderBT, int &idx) {
+        if(root == NULL) {
+            return NULL;
+        }
+        root->left = inorderBST(root->left, inorderBT, idx);
+        root->data = inorderBT[idx++];
+        root->right = inorderBST(root->right, inorderBT, idx);
+        
+        return root;
+    }
+    void inorder(Node* &root, vector<int> &inorderBT) {
+        if(root == NULL) {
+            return;
+        }
+        inorder(root->left, inorderBT);
+        inorderBT.push_back(root->data);
+        inorder(root->right, inorderBT);
+    }
+    // The given root is the root of the Binary Tree
+    // Return the root of the generated BST
+    Node *binaryTreeToBST(Node *root) {
+        if(root == NULL) {
+            return NULL;
+        }
+        vector<int> inorderBT;
+        inorder(root, inorderBT);
+        sort(inorderBT.begin(), inorderBT.end());
+        
+        int idx = 0;
+        Node* BSTRoot = inorderBST(root, inorderBT, idx);
+        
+        return BSTRoot;
+    }
+};
