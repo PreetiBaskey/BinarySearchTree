@@ -78,3 +78,46 @@ int main() {
     
     return 0;
 }
+
+
+
+
+
+
+//GeeksForGeeks version of convert binary search tree to max heap
+// User function Template for C++
+
+/*struct Node {
+    int data;
+    Node *left, *right;
+};*/
+
+class Solution {
+  public:
+    Node* createMaxHeap(Node* &root, vector<int> &inorderBST, int &idx) {
+        if(root == NULL) {
+            return NULL;
+        }
+        createMaxHeap(root->left, inorderBST, idx);
+        createMaxHeap(root->right, inorderBST, idx);
+        root->data = inorderBST[idx];
+        idx++;
+        
+        return root;
+    }
+    void inorder(Node* &root, vector<int> &inorderBST) {
+        if(root == NULL) {
+            return;
+        }
+        inorder(root->left, inorderBST);
+        inorderBST.push_back(root->data);
+        inorder(root->right, inorderBST);
+    }
+    void convertToMaxHeapUtil(Node* root) {
+        vector<int> inorderBST;
+        inorder(root, inorderBST);
+        
+        int idx = 0;
+        createMaxHeap(root, inorderBST, idx);
+    }
+};
