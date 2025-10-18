@@ -1,0 +1,43 @@
+// LeetCode question no - 98, time complexity - O(n), space complexity - O(n) - Medium
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    void inorder(TreeNode* &root, vector<int> &inorderBST) {
+        if(root == NULL) {
+            return;
+        }
+        inorder(root->left, inorderBST);
+        inorderBST.push_back(root->val);
+        inorder(root->right, inorderBST);
+    }
+    bool isValidBST(TreeNode* root) {
+        if(root == NULL) {
+            return true;
+        }
+        vector<int> inorderBST;
+        inorder(root, inorderBST);
+        bool isBST = true;
+        int preVal = inorderBST[0];
+        int n = inorderBST.size();
+
+        for(int i = 1; i < n; i++) {
+            if(inorderBST[i] <= preVal) {
+                isBST = false;
+            }
+            preVal = inorderBST[i];
+        }
+
+        return isBST;
+    }
+};
