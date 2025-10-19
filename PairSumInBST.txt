@@ -90,3 +90,55 @@ int main() {
     
     return 0;
 }
+
+
+
+
+
+
+//GeeksForGeeks version of pair sum target, Medium, Time complexity - O(n), Space complexity - O(n)
+/*
+Node is as follows
+class Node {
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+    void inorder(Node* root, vector<int> &result) {
+        if(root == NULL) {
+            return;
+        }
+        inorder(root->left, result);
+        result.push_back(root->data);
+        inorder(root->right, result);
+    }
+    bool findTarget(Node *root, int target) {
+        vector<int> result;
+        inorder(root, result);
+        int start = 0;
+        int end = result.size() - 1;
+        
+        while(start < end) {
+            if(result[start] + result[end] == target) {
+                return true;
+            }
+            else if(result[start] + result[end] < target) {
+                start++;
+            }
+            else {
+                end--;
+            }
+        }
+        
+        return false;
+    }
+};
