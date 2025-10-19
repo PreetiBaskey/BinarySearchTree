@@ -104,3 +104,78 @@ int main() {
     
     return 0;
 }
+
+
+
+
+//GeeksForGeeks version of merge two BST, medium , Time complexity - O(n1 + n2), Space complexity - O(h1 + h2)
+/*
+class Node {
+  public:
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+    void fillStack(Node* root, stack<Node*> &st) {
+        Node* curr = root;
+        while(curr != NULL) {
+            st.push(curr);
+            curr = curr->left;
+        }
+    }
+    vector<int> merge(Node *root1, Node *root2) {
+        stack<Node*> st1;
+        stack<Node*> st2;
+        vector<int> result;
+        fillStack(root1, st1);
+        fillStack(root2, st2);
+        
+        while(!st1.empty() && !st2.empty()) {
+            if(st1.top()->data < st2.top()->data) {
+                Node* curr = st1.top();
+                st1.pop();
+                result.push_back(curr->data);
+                fillStack(curr->right, st1);
+            }
+            else if(st2.top()->data < st1.top()->data) {
+                Node* curr = st2.top();
+                st2.pop();
+                result.push_back(curr->data);
+                fillStack(curr->right, st2);
+            }
+            else {
+                Node* curr1 = st1.top();
+                Node* curr2 = st2.top();
+                st1.pop();
+                st2.pop();
+                result.push_back(curr1->data);
+                result.push_back(curr2->data);
+                fillStack(curr1->right, st1);
+                fillStack(curr2->right, st2);
+            }
+        }
+        while(!st1.empty()) {
+            Node* curr = st1.top();
+            st1.pop();
+            result.push_back(curr->data);
+            fillStack(curr->right, st1);
+        }
+        while(!st2.empty()) {
+            Node* curr = st2.top();
+            st2.pop();
+            result.push_back(curr->data);
+            fillStack(curr->right, st2);
+        }
+        
+        return result;
+    }
+};
