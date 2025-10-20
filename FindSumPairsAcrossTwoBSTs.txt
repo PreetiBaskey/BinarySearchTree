@@ -1,0 +1,56 @@
+//GeeksForGeeks of find sum pair across two BSTs, easy, time complexity - O(n + m), space complexity - O(n + m)
+
+/*
+class Node {
+public:
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+    void inorder(Node* root, vector<int> &inorderBST) {
+        if(root == NULL) {
+            return;
+        }
+        inorder(root->left, inorderBST);
+        inorderBST.push_back(root->data);
+        inorder(root->right, inorderBST);
+    }
+    int countPairs(Node* root1, Node* root2, int x) {
+        vector<int> inorderBST1;
+        vector<int> inorderBST2;
+        inorder(root1, inorderBST1);
+        inorder(root2, inorderBST2);
+        int n = inorderBST1.size();
+        int m = inorderBST2.size();
+        
+        int count = 0;
+        int i = 0, j = m - 1;
+        while(i < n && j >= 0) {
+            if(inorderBST1[i] + inorderBST2[j] == x) {
+                count++;
+                i++;
+                j--;
+            }
+            else if(inorderBST1[i] + inorderBST2[j] < x) {
+                i++;
+            }
+            else if(inorderBST1[i] + inorderBST2[j] > x) {
+                j--;
+            }
+        }
+        
+        return count;
+    }
+};
+
+
+
